@@ -1,0 +1,326 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Finanças Família V5.8</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0f766e"><style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--pri:#0f766e;--pri2:#115e59;--ok:#16a34a;--warn:#d97706;--bad:#dc2626}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}header{position:sticky;top:0;z-index:4;background:linear-gradient(135deg,#0f766e,#134e4a);color:white;padding:16px;box-shadow:0 2px 10px #0002}header h1{margin:0;font-size:22px}header p{margin:4px 0 0;color:#ccfbf1;font-size:13px}nav{display:flex;gap:8px;overflow:auto;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:70px;z-index:3}nav button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;white-space:nowrap;color:#374151;font-weight:650}nav button.active{background:var(--pri);color:white;border-color:var(--pri)}main{padding:14px;max-width:1240px;margin:auto}.tab{display:none}.tab.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 1px 4px #0000000a}.kpi .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.kpi .value{font-size:24px;font-weight:800;margin-top:4px}.kpi .hint{font-size:12px;color:var(--muted);margin-top:2px}h2{font-size:20px;margin:14px 0 10px}h3{font-size:16px;margin:10px 0 8px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}input,select,button{font:inherit}input,select{border:1px solid var(--line);border-radius:10px;padding:10px;background:white;min-width:140px}button.primary{background:var(--pri);color:white;border:0;border-radius:10px;padding:10px 14px;font-weight:700}button.ghost{background:white;color:#374151;border:1px solid var(--line);border-radius:10px;padding:10px 14px}.tableWrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:16px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f9fafb;position:sticky;top:0;z-index:1;color:#374151}td.num,th.num{text-align:right}.pill{display:inline-flex;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;background:#eef2ff;color:#3730a3}.bad{color:var(--bad)}.ok{color:var(--ok)}.warn{color:var(--warn)}.bar{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:var(--pri);width:0}.bar span.over{background:var(--bad)}.small{font-size:12px;color:var(--muted)}.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.alert{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:10px;margin:8px 0}.success{background:#ecfdf5;border:1px solid #bbf7d0;color:#166534;border-radius:14px;padding:10px;margin:8px 0}footer{padding:30px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:820px){.split{grid-template-columns:1fr}nav{top:82px}.kpi .value{font-size:21px}}
+</style></head><body><header><h1>Finanças Família V5.8</h1><p>Versão corrigida: filtros persistentes, janeiro–dezembro, Supabase real, RLS por chave familiar, meses/cartões normalizados e auditoria de totais.</p></header><nav id="nav"></nav><main>
+<section id="dashboard" class="tab active"><h2>Dashboard inteligente</h2><div class="toolbar"><select id="dashMes"></select><button class="ghost" onclick="resetData()">Restaurar dados da planilha</button><button class="ghost" onclick="exportBackup()">Exportar backup</button><button class="ghost" onclick="syncDown()">Sincronizar do Supabase</button></div><div class="grid" id="kpis"></div><div id="alerts"></div><div class="split"><div class="card"><h3>Resumo mensal auditado</h3><div class="tableWrap"><table id="tblOrc"></table></div></div><div class="card"><h3>Maiores empresas do mês</h3><div class="tableWrap"><table id="tblTopEmp"></table></div></div></div></section>
+<section id="lancar" class="tab"><h2>Adicionar compra inteligente</h2><div class="card"><div class="toolbar"><input id="cmpData" type="date"><input id="cmpEmpresa" placeholder="Empresa / descrição"><input id="cmpValor" type="number" step="0.01" placeholder="Valor"><select id="cmpCartao"></select><select id="cmpCategoria"></select><select id="cmpMes"></select><input id="cmpParcelas" type="number" min="1" value="1" placeholder="Parcelas"><button class="primary" onclick="addCompra()">Adicionar</button></div><p class="small">A categoria pode ser sugerida automaticamente pela empresa. Feira e Combustível reduzem seus orçamentos. Parcelas entram nos meses seguintes.</p></div><div id="msgLanc"></div></section>
+<section id="todas" class="tab"><h2>Todas as compras</h2><div class="toolbar" id="filtrosTodas"></div><div class="tableWrap"><table id="tblTodas"></table></div></section>
+<section id="cartoes" class="tab"><h2>Todas as compras nos cartões</h2><div class="toolbar" id="filtrosCartao"></div><div id="cartaoResumo" class="grid"></div><div class="tableWrap"><table id="tblCartoes"></table></div></section>
+<section id="individual" class="tab"><h2>Cartão individual</h2><div class="toolbar"><select id="selCard"></select><select id="selCardMes"></select><input id="selCardBusca" placeholder="Buscar empresa"><button class="ghost" onclick="render()">Filtrar</button></div><div class="grid" id="cardKpis"></div><div class="split"><div class="card"><h3>Compras do cartão</h3><div class="tableWrap"><table id="tblCardInd"></table></div></div><div class="card"><h3>Empresas nesse cartão</h3><div class="tableWrap"><table id="tblCardEmp"></table></div></div></div></section>
+<section id="empresas" class="tab"><h2>Ranking de empresas</h2><div class="toolbar"><select id="empMes"></select><select id="empCartao"></select><input id="empBusca" placeholder="Buscar empresa"><button class="ghost" onclick="render()">Filtrar</button></div><div class="tableWrap"><table id="tblEmpresas"></table></div></section>
+<section id="orcamentos" class="tab"><h2>Orçamentos: Feira e Combustível</h2><div class="toolbar"><select id="orcMes"></select><input id="limFeira" type="number" step="0.01" placeholder="Orçamento feira"><input id="limComb" type="number" step="0.01" placeholder="Orçamento combustível"><button class="primary" onclick="saveBudgets()">Salvar limites</button></div><div class="grid" id="orcCards"></div><div class="tableWrap"><table id="tblOrcDetalhe"></table></div></section>
+<section id="feira" class="tab"><h2>Central da Feira</h2><div class="grid" id="feiraKpis"></div><div class="tableWrap"><table id="tblFeira"></table></div></section>
+<section id="planejamento" class="tab"><h2>Planejamento anual e auditoria</h2><div class="tableWrap"><table id="tblPlan"></table></div></section>
+
+<section id="auditoria" class="tab"><h2>Auditoria financeira</h2><p class="small"><b>V5.8:</b> a linha “Cartões” da aba Variáveis é excluída da soma para evitar duplicidade com as compras reais dos cartões. Compara os totais da planilha/orçamento com os valores recalculados pelo sistema. Diferenças relevantes indicam possível duplicidade, lançamento ausente ou categoria consolidada em outra aba.</p><div class="grid" id="auditoriaKpis"></div><div class="tableWrap"><table id="tblAuditoria"></table></div></section>
+<section id="historico" class="tab"><h2>Histórico de alterações</h2><div class="toolbar"><input id="histUsuario" placeholder="Usuário: Felipe ou Rafaela"><input id="histDevice" placeholder="Dispositivo: iPhone, notebook..."><button class="primary" onclick="saveIdentity()">Salvar identificação</button><button class="ghost" onclick="addManualHistory()">Registrar alteração manual</button><button class="ghost" onclick="clearHistory()">Limpar histórico local</button></div><div class="grid" id="conflictKpis"></div><div id="histMsg"></div><div class="tableWrap"><table id="tblHistorico"></table></div></section>
+
+
+<section id="relatorios" class="tab"><h2>Relatório mensal</h2><p class="small">Gere resumo financeiro, CSV e PDF/impressão do mês selecionado.</p><div class="toolbar"><select id="relMes"></select><button class="primary" onclick="gerarResumoMensal()">Gerar resumo</button><button class="ghost" onclick="baixarCSVRelatorio()">Baixar CSV</button><button class="ghost" onclick="imprimirRelatorioPDF()">PDF / Imprimir</button></div><div id="relResumo"></div><div class="tableWrap"><table id="tblRelatorio"></table></div></section>
+
+<section id="supabase" class="tab"><h2>Supabase / sincronização</h2><div class="card"><p>Configure URL, anon key e código familiar. A sincronização usa funções RPC com chave familiar; as tabelas ficam com RLS ativo e sem políticas abertas.</p><div class="toolbar"><input id="familyKey" placeholder="Código familiar"><input id="supUrl" placeholder="Supabase URL"><input id="supKey" placeholder="Supabase anon key"><button class="primary" onclick="saveSyncConfig()">Salvar</button><button class="ghost" onclick="syncUp()">Enviar dados locais</button><button class="ghost" onclick="syncDown()">Baixar dados</button></div><div id="syncMsg"></div></div></section>
+</main><footer>Finanças Família V5.8 · Dados importados de Financeiro - 2026.xlsx</footer><script src="financeiro-data.js"></script><script src="supabase-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const tabs=[['dashboard','Dashboard'],['lancar','Adicionar compra'],['todas','Todas as compras'],['cartoes','Compras nos cartões'],['individual','Por cartão'],['empresas','Empresas'],['orcamentos','Orçamentos'],['feira','Feira'],['planejamento','Planejamento'],['auditoria','Auditoria'],['historico','Histórico'],['relatorios','Relatórios'],['supabase','Supabase']];
+const cats=['Feira','Combustível','Transporte','Saúde/Academia','Assinaturas','Educação','Lazer','Compras','Fixa','Variável','Outros'];
+let state=loadState(); const meses=state.meses;
+function loadState(){let s=JSON.parse(localStorage.getItem('financasV58')||'null')||structuredClone(window.SEED_DATA); normalizeState(s); return s;}
+
+function categoriaInteligente(empresa){
+  let e=normalizeText(empresa||'');
+  if(/(assai|atacadao|carrefour|bompreco|supermercado|mercado|hortifruti|padaria|acougue|frutaria|feira|extra|pao de acucar)/.test(e)) return 'Feira';
+  if(/(shell|ipiranga|petrobras|posto|combustivel|gasolina|etanol|diesel|br mania)/.test(e)) return 'Combustível';
+  if(/(drogasil|drogaria|farmacia|pague menos|ultrafarma|raia|panvel|unimed|clinica|laboratorio|hospital|medico|odontologia|consulta)/.test(e)) return 'Saúde';
+  if(/(amazon|mercado livre|shopee|magalu|americanas|aliexpress|shein|casas bahia|natura|boticario|loja|shopping)/.test(e)) return 'Compras';
+  if(/(netflix|spotify|icloud|google|apple|youtube|prime|disney|hbo|max|globoplay|gympass|academia|onedrive|microsoft)/.test(e)) return 'Assinaturas';
+  if(/(uber|99|estacionamento|pedagio|onstar|seguro|moto|carro|oficina|pneu|lavagem)/.test(e)) return 'Transporte';
+  if(/(escola|curso|livro|papelaria|farda|material escolar|faculdade|udemy)/.test(e)) return 'Educação';
+  if(/(restaurante|ifood|lanchonete|pizzaria|burger|sushi|bar|acai|cafeteria|sorveteria)/.test(e)) return 'Alimentação fora';
+  return 'Outros';
+}
+function suggestCat(empresa){ return categoriaInteligente(empresa); }
+function guessCategory(empresa){ return categoriaInteligente(empresa); }
+
+function normalizeText(s){return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
+function normalizeMes(m){const n=normalizeText(m); const map={janeiro:'janeiro',jan:'janeiro',fevereiro:'fevereiro',fev:'fevereiro',marco:'março',mar:'março',abril:'abril',abr:'abril',maio:'maio',mai:'maio',junho:'junho',jun:'junho',julho:'julho',jul:'julho',agosto:'agosto',ago:'agosto',setembro:'setembro',set:'setembro',outubro:'outubro',out:'outubro',novembro:'novembro',nov:'novembro',dezembro:'dezembro',dez:'dezembro'};return map[n]||m;}
+function normalizeCard(c){const n=normalizeText(c); if(n.includes('rafaela')) return 'Nubank Rafaela'; if(n.includes('nubank')&&n.includes('felipe')) return 'Nubank Felipe'; if(n.includes('bradesco')) return 'Bradesco'; if(n.includes('itau')) return 'Itaucard Felipe'; return c||'-';}
+function normalizeState(s){s.meses=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro']; s.comprasCartao=(s.comprasCartao||[]).map((x,i)=>({...x,id:x.id||('local-'+i),mes:normalizeMes(x.mes),cartao:normalizeCard(x.cartao),empresa:(x.empresa||'').trim(),empresaNorm:normalizeText(x.empresa),valor:+x.valor||0,categoria:x.categoria||suggestCat(x.empresa),meio:'Cartão'})); s.cartoes=[...new Set(s.comprasCartao.map(x=>x.cartao))].filter(Boolean).map(nome=>({nome})); return s;}
+function money(v){return (v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function save(){state.lastUpdated=new Date().toISOString();localStorage.setItem('financasV58',JSON.stringify(state));}
+
+function historyKey(e){
+  return [e.at||'', e.by||'', e.device||'', e.action||'', e.detail||''].join('|');
+}
+function dedupHistory(list){
+  const map = new Map();
+  (list||[]).forEach(e=>{
+    const k = e.id || historyKey(e);
+    if(!map.has(k)) map.set(k,e);
+  });
+  return Array.from(map.values()).sort((a,b)=>new Date(b.at||0)-new Date(a.at||0)).slice(0,250);
+}
+
+function historyMeta(){return JSON.parse(localStorage.getItem('financas_familia_v58_meta')||'{"history":[]}');}
+function saveHistoryMeta(m){localStorage.setItem('financas_familia_v58_meta',JSON.stringify(m));}
+function currentUser(){return localStorage.getItem('ff_user')||'Usuário';}
+function currentDevice(){return localStorage.getItem('ff_device')||navigator.userAgent.slice(0,55);}
+function addHistory(action,detail){let m=historyMeta();m.history=m.history||[];m.history.unshift({at:new Date().toISOString(),by:currentUser(),device:currentDevice(),action,detail:detail||''});m.history=dedupHistory(m.history);saveHistoryMeta(m);}
+
+function getFilter(k,d=''){return localStorage.getItem('filtro_'+k)??d;} function setFilter(k,v){localStorage.setItem('filtro_'+k,v);} function bindPersist(el,key){if(!el)return; el.value=getFilter(key,el.value||''); el.onchange=()=>{setFilter(key,el.value);render();}; el.oninput=()=>{setFilter(key,el.value);};}
+function fillSelect(el,arr,all){const old=el.value||getFilter(el.id,''); el.innerHTML=(all?`<option value="">${all}</option>`:'')+arr.map(x=>`<option value="${x}">${x}</option>`).join(''); if([...el.options].some(o=>o.value===old))el.value=old;}
+function initNav(){nav.innerHTML=tabs.map(([id,n])=>`<button data-tab="${id}" onclick="showTab('${id}')">${n}</button>`).join(''); nav.querySelector('button').classList.add('active');}
+function showTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));render();}
+
+function saveIdentity(){localStorage.setItem('ff_user',histUsuario.value||'Usuário');localStorage.setItem('ff_device',histDevice.value||navigator.userAgent.slice(0,55));addHistory('Identificação atualizada',`${currentUser()} · ${currentDevice()}`);histMsg.innerHTML='<div class="success">Identificação salva.</div>';renderHistorico();}
+function addManualHistory(){let d=prompt('Descreva a alteração:'); if(d){addHistory('Registro manual',d);renderHistorico();}}
+function clearHistory(){if(confirm('Limpar histórico local?')){saveHistoryMeta({history:[]});renderHistorico();}}
+
+function valorNum(v){ return Number(String(v ?? 0).replace(/\./g,'').replace(',','.')) || Number(v) || 0; }
+function mesNorm(m){ return normalizeText(m||''); }
+
+
+
+
+
+
+
+
+
+function isLinhaCartoes(item){
+  const texto = normalizeText([item?.nome,item?.descricao,item?.categoria,item?.tipo,item?.item].filter(Boolean).join(' '));
+  return /\bcartao\b|\bcartoes\b|cartões|cartao de credito|cartao credito/.test(texto);
+}
+
+function valorPorMes(item, mes){
+  if(!item) return 0;
+  if(item.valores && typeof item.valores === 'object'){
+    let alvo = mesNorm(mes);
+    for(const [k,v] of Object.entries(item.valores)){
+      if(mesNorm(k) === alvo) return Number(v||0);
+    }
+  }
+  if(item.mes && mesNorm(item.mes)!==mesNorm(mes)) return 0;
+  return Number(item.valor||0);
+}
+
+function calcCartoesMes(mes){
+  return (state.comprasCartao||[])
+    .filter(c=>mesNorm(c.mes||c.mesFatura||c.month)===mesNorm(mes))
+    .reduce((s,c)=>s+Number(c.valor||0),0);
+}
+
+function calcFixasMes(mes){
+  return (state.fixas||[]).reduce((s,f)=>s+valorPorMes(f,mes),0);
+}
+
+
+function calcVariaveisMes(mes){
+  return (state.variaveis||[]).reduce((s,v)=>{
+    if(isLinhaCartoes(v)) return s;
+    return s+valorPorMes(v,mes);
+  },0);
+}
+
+
+function renderAuditoria(){
+  let base=(state.orcamento||[]);
+  let rows=base.map(r=>{
+    let fixas=calcFixasMes(r.mes);
+    let variaveis=calcVariaveisMes(r.mes);
+    let cartoes=calcCartoesMes(r.mes);
+    let sistema=fixas+variaveis+cartoes;
+    let planilha=Number(r.despesas_planilha ?? r.despesas ?? r.total ?? 0);
+    let diferenca=sistema-planilha;
+    return {
+      mes:r.mes,
+      planilha,
+      fixas_calc:fixas,
+      variaveis_calc:variaveis,
+      cartoes_calc:cartoes,
+      sistema_recalculado:sistema,
+      diferenca_contabil:diferenca,
+      status:Math.abs(diferenca)<1?'OK':(Math.abs(diferenca)>250?'Revisar':'Atenção')
+    };
+  });
+
+  let diverg=rows.filter(r=>Math.abs(r.diferenca_contabil)>250);
+  let totalDif=rows.reduce((s,r)=>s+Math.abs(r.diferenca_contabil),0);
+
+  if(typeof auditoriaKpis!=='undefined'){
+    auditoriaKpis.innerHTML=[
+      ['Meses auditados',rows.length,'janeiro a dezembro'],
+      ['Diferenças relevantes',diverg.length,'acima de R$ 250'],
+      ['Diferença absoluta total',money(totalDif),'auditoria recalculada'],
+      ['Última atualização',state.lastUpdated?new Date(state.lastUpdated).toLocaleString('pt-BR'):'-', 'cache local']
+    ].map(k=>`<div class="card kpi"><div class="label">${k[0]}</div><div class="value">${k[1]}</div><div class="hint">${k[2]}</div></div>`).join('');
+  }
+
+  makeTable('tblAuditoria',[
+    {t:'Mês',k:'mes'},
+    {t:'Planilha',num:1,f:r=>money(r.planilha)},
+    {t:'Fixas',num:1,f:r=>money(r.fixas_calc)},
+    {t:'Variáveis sem cartões',num:1,f:r=>money(r.variaveis_calc)},
+    {t:'Cartões',num:1,f:r=>money(r.cartoes_calc)},
+    {t:'Sistema recalculado',num:1,f:r=>money(r.sistema_recalculado)},
+    {t:'Diferença',num:1,f:r=>`<span class="${Math.abs(r.diferenca_contabil)>250?'bad':(Math.abs(r.diferenca_contabil)>1?'warn':'ok')}">${money(r.diferenca_contabil)}</span>`},
+    {t:'Status',f:r=>`<span class="pill">${r.status}</span>`}
+  ],rows);
+}
+
+function renderHistorico(){
+  histUsuario.value=localStorage.getItem('ff_user')||'';
+  histDevice.value=localStorage.getItem('ff_device')||'';
+  let metaH=historyMeta(); let h=(metaH.history||[]); if(typeof conflictKpis!=='undefined'){let resolvidos=metaH.conflictsResolved||h.filter(x=>/Conflito mesclado/i.test(x.action||'')).length; conflictKpis.innerHTML=[['Conflitos resolvidos',resolvidos,'mesclagens realizadas'],['Eventos no histórico',h.length,'após deduplicação']].map(k=>`<div class="card kpi"><div class="label">${k[0]}</div><div class="value">${k[1]}</div><div class="hint">${k[2]}</div></div>`).join('');}
+  makeTable('tblHistorico',[
+    {t:'Data',f:r=>new Date(r.at).toLocaleString('pt-BR')},
+    {t:'Usuário',k:'by'},
+    {t:'Dispositivo',k:'device'},
+    {t:'Ação',k:'action'},
+    {t:'Detalhe',k:'detail'}
+  ],h);
+}
+
+
+
+function itemMergeKey(item, idx, tipo){
+  if(item.id) return item.id;
+  if(tipo==='orcamento') return normalizeText(item.mes||idx);
+  if(tipo==='feira') return normalizeText(item.produto||item.item||item.descricao||idx);
+  return normalizeText([item.nome,item.descricao,item.categoria,item.mes,item.valor,idx].join('|'));
+}
+function mergeArrayByKey(localArr, remoteArr, tipo){
+  const map = new Map();
+  (remoteArr||[]).forEach((x,i)=>map.set(itemMergeKey(x,i,tipo), x));
+  (localArr||[]).forEach((x,i)=>{
+    const k=itemMergeKey(x,i,tipo);
+    const atual=map.get(k);
+    if(!atual) map.set(k,x);
+    else{
+      const lu=new Date(x.updated_at||0).getTime();
+      const ru=new Date(atual.updated_at||0).getTime();
+      map.set(k, lu>ru ? {...atual,...x} : {...x,...atual});
+    }
+  });
+  return Array.from(map.values());
+}
+function mergeStateWithCloud(data){
+  const locaisCompras = state.comprasCartao || [];
+  const remotasCompras = data.compras || [];
+  const mapa = new Map();
+  [...remotasCompras, ...locaisCompras].forEach(c=>{
+    const k = c.id || [c.cartao,c.empresa,c.valor,c.mes,c.parcela].join('|');
+    const atual=mapa.get(k);
+    if(!atual) mapa.set(k,c);
+    else{
+      const lu=new Date(c.updated_at||0).getTime();
+      const ru=new Date(atual.updated_at||0).getTime();
+      mapa.set(k, lu>ru ? {...atual,...c} : {...c,...atual});
+    }
+  });
+  data.compras = Array.from(mapa.values());
+  data.fixas = mergeArrayByKey(state.fixas, data.fixas, 'fixas');
+  data.variaveis = mergeArrayByKey(state.variaveis, data.variaveis, 'variaveis');
+  data.orcamento = mergeArrayByKey(state.orcamento, data.orcamento, 'orcamento');
+  data.feira = mergeArrayByKey(state.feira, data.feira, 'feira');
+  let meta=historyMeta();
+  meta.conflictsResolved=(meta.conflictsResolved||0)+1;
+  saveHistoryMeta(meta);
+  addHistory('Conflito mesclado','Compras, fixas, variáveis, orçamento e feira foram mesclados.');
+  return data;
+}
+
+function reclassificarOutros(){
+  let alteradas=0;
+  (state.comprasCartao||[]).forEach(c=>{
+    const nova = categoriaInteligente(c.empresa||'');
+    if((!c.categoria || normalizeText(c.categoria)==='outros') && nova && nova !== 'Outros'){
+      c.categoria = nova;
+      c.updated_at = new Date().toISOString();
+      c.updated_by = currentUser ? currentUser() : 'Sistema';
+      c.device = currentDevice ? currentDevice() : 'Sistema';
+      alteradas++;
+    }
+  });
+  if(alteradas>0){
+    addHistory('Reclassificação automática', `${alteradas} compras antigas em Outros foram reclassificadas.`);
+    save();
+  }
+  return alteradas;
+}
+
+
+function renderRelatorios(){
+  if(typeof relMes==='undefined') return;
+  relMes.innerHTML=MESES.map(m=>`<option value="${m}">${m}</option>`).join('');
+  relMes.value=state.mesAtual||MESES[new Date().getMonth()]||'janeiro';
+  gerarResumoMensal();
+}
+function dadosRelatorioMes(mes){
+  const compras=(state.comprasCartao||[]).filter(c=>mesNorm(c.mes||c.mesFatura||c.month)===mesNorm(mes));
+  const fixas=calcFixasMes(mes);
+  const variaveis=calcVariaveisMes(mes);
+  const cartoes=compras.reduce((s,c)=>s+Number(c.valor||0),0);
+  const total=fixas+variaveis+cartoes;
+  const porCategoria={};
+  compras.forEach(c=>{porCategoria[c.categoria||'Outros']=(porCategoria[c.categoria||'Outros']||0)+Number(c.valor||0);});
+  return {mes,compras,fixas,variaveis,cartoes,total,porCategoria};
+}
+function gerarResumoMensal(){
+  const d=dadosRelatorioMes(relMes.value);
+  relResumo.innerHTML=`<div class="grid">
+    <div class="card kpi"><div class="label">Fixas</div><div class="value">${money(d.fixas)}</div></div>
+    <div class="card kpi"><div class="label">Variáveis sem cartões</div><div class="value">${money(d.variaveis)}</div></div>
+    <div class="card kpi"><div class="label">Cartões</div><div class="value">${money(d.cartoes)}</div></div>
+    <div class="card kpi"><div class="label">Total do mês</div><div class="value">${money(d.total)}</div></div>
+  </div>`;
+  makeTable('tblRelatorio',[
+    {t:'Empresa',k:'empresa'},
+    {t:'Cartão',k:'cartao'},
+    {t:'Categoria',k:'categoria'},
+    {t:'Parcela',k:'parcela'},
+    {t:'Valor',num:1,f:r=>money(r.valor)}
+  ],d.compras);
+}
+function baixarCSVRelatorio(){
+  const d=dadosRelatorioMes(relMes.value);
+  const linhas=[['mes','empresa','cartao','categoria','parcela','valor']];
+  d.compras.forEach(c=>linhas.push([d.mes,c.empresa||'',c.cartao||'',c.categoria||'',c.parcela||'',String(c.valor||0).replace('.',',')]));
+  const csv=linhas.map(l=>l.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`relatorio-${d.mes}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function imprimirRelatorioPDF(){
+  gerarResumoMensal();
+  window.print();
+}
+
+function render(){renderDashboard();renderLanc();renderTodas();renderCartoes();renderIndividual();renderEmpresas();renderOrcamentos();renderFeira();renderPlan();renderAuditoria();renderHistorico();renderRelatorios();}
+function resetData(){if(confirm('Restaurar dados originais da planilha?')){localStorage.removeItem('financasV58');location.reload();}}
+function exportBackup(){let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-financas-v5-8.json';a.click();}
+function cfg(){return JSON.parse(localStorage.getItem('financasSync')||'{}');} function client(){let c=cfg(); if(!c.url||!c.key||!window.supabase)return null; return window.supabase.createClient(c.url,c.key);} function saveSyncConfig(){localStorage.setItem('financasSync',JSON.stringify({familyKey:familyKey.value,url:supUrl.value,key:supKey.value}));syncMsg.innerHTML='<div class="success">Configuração salva.</div>';}
+async function syncUp(silent=false){let c=client(), conf=cfg(); if(!c||!conf.familyKey){if(!silent)syncMsg.innerHTML='<div class="alert">Configure o Supabase primeiro.</div>';return;} let meta=historyMeta(); let payload={compras:state.comprasCartao,config:state.config,fixas:state.fixas,orcamento:state.orcamento,feira:state.feira,variaveis:state.variaveis,history:meta.history||[],updated_by:currentUser(),device:currentDevice(),lastUpdated:new Date().toISOString()}; let {error}=await c.rpc('family_save_state',{p_family_key:conf.familyKey,p_payload:payload});
+    if(meta.history && meta.history.length){
+      try{ await c.rpc('family_append_history',{p_family_key:conf.familyKey,p_events:meta.history.slice(0,20)}); }catch(e){}
+    } if(error){if(!silent)syncMsg.innerHTML='<div class="alert">Erro: '+error.message+'</div>';} else if(!silent) syncMsg.innerHTML='<div class="success">Dados enviados ao Supabase.</div>';}
+async function syncDown(){let c=client(), conf=cfg(); if(!c||!conf.familyKey){syncMsg.innerHTML='<div class="alert">Configure o Supabase primeiro.</div>';return;} let {data,error}=await c.rpc('family_load_state',{p_family_key:conf.familyKey}); if(error){syncMsg.innerHTML='<div class="alert">Erro: '+error.message+'</div>';return;} if(data){
+    if(data.lastUpdated && state.lastUpdated && new Date(data.lastUpdated)>new Date(state.lastUpdated)){
+      addHistory('Conflito detectado','Nuvem mais recente que este aparelho.');
+      const escolha = prompt('Há dados mais recentes na nuvem. Digite: NUVEM, LOCAL ou MESCLAR', 'MESCLAR');
+      if((escolha||'').toUpperCase()==='LOCAL'){
+        syncMsg.innerHTML='<div class="warn">Sincronização cancelada. Dados locais mantidos.</div>';
+        return;
+      }
+      if((escolha||'').toUpperCase()==='MESCLAR'){ data = mergeStateWithCloud(data); }
+    }
+    if(data.compras) state.comprasCartao=data.compras; if(data.config) state.config={...state.config,...data.config}; if(data.fixas) state.fixas=data.fixas; if(data.orcamento) state.orcamento=data.orcamento; if(data.feira) state.feira=data.feira; if(data.variaveis) state.variaveis=data.variaveis; if(data.history){let m=historyMeta();m.history=dedupHistory(data.history.concat(m.history||[]));saveHistoryMeta(m);}
+      try{
+        let hr=await c.rpc('family_load_history',{p_family_key:conf.familyKey});
+        if(hr && hr.data){let m=historyMeta();m.history=dedupHistory(hr.data.concat(m.history||[]));saveHistoryMeta(m);}
+      }catch(e){} state.lastSync=data.lastUpdated||new Date().toISOString(); normalizeState(state); save(); render(); syncMsg.innerHTML='<div class="success">Sincronização completa realizada.</div>';} else syncMsg.innerHTML='<div class="alert">Nenhum dado encontrado para essa chave familiar.</div>';}
+initNav();reclassificarOutros();render();
+</script>
+
+
+</body></html>
