@@ -1,18 +1,25 @@
-# Finanças Família V5.8 limpa
+# Finanças Família — V30 Executive
 
-Versão baseada na V5.7, com limpeza de arquivos antigos e resquícios de versões anteriores.
+Versão visual executiva da plataforma financeira familiar.
 
-## Limpeza realizada
+## Implementado
+- Remoção visual dos quadrados/placeholder vazios.
+- Ícones reais nos KPIs e módulos.
+- Identidade visual dos cartões Itaú, Bradesco e Nubank.
+- Gráficos com acabamento premium e animações leves.
+- Modais escuros corrigidos e integrados ao tema.
+- Tipografia refinada.
+- Indicador de comprometimento da renda no Dashboard.
+- Hover e transições suaves.
+- Todas as funcionalidades da V29.3 foram preservadas.
 
-- Removidos arquivos antigos de validação de versões anteriores.
-- Atualizadas referências internas para V5.8.
-- Atualizados nomes de armazenamento local.
-- Atualizado nome de backup.
-- Atualizados comentários do SQL.
-- Mantidas as funcionalidades da V5.7:
-  - auditoria sem duplicidade dos cartões;
-  - histórico;
-  - conflitos;
-  - relatórios;
-  - Supabase;
-  - categorização automática.
+## Mantido
+- Dashboard.
+- Despesas fixas permanentes.
+- Despesas variáveis.
+- Cartões.
+- Relatórios.
+- Histórico.
+- Backup/exportação/importação.
+- Funcionamento offline.
+- Base financeira existente.
