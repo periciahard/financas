@@ -1,5 +1,0 @@
-pasta_limpa: True
-sem_validacoes_antigas: True
-versao_index: True
-versao_manifest: True
-versao_sql: True
