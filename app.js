@@ -38,7 +38,7 @@ const FATURA_NUBANK_FELIPE_AGOSTO_2026=[
   {id:'oboticario-2',data:'2026-06-26',empresa:'Hna*Oboticario',valor:30.78,atual:2,total:10,categoria:'Compras'}
 ];
 const TABS=[['dashboard','Dashboard','📊'],['fixas','Despesas fixas','🏠'],['variaveis','Despesas variáveis','🛒'],['cartoes','Cartões','💳'],['orcamentos','Relatórios','📈'],['historico','Exportar / Backup','☁️']];
-const APP_VERSION='V33.2.2 Interface Compacta';
+const APP_VERSION='V33.3.10';
 const STORE='financasFamiliaV33_2_2InterfaceCompacta';
 const HIST='financasFamiliaHistoricoV33_2_2InterfaceCompacta';
 let state=null;

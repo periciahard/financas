@@ -1,4 +1,4 @@
-const CACHE_NAME = 'financas-familia-v33-3-9-backup-grande';
+const CACHE_NAME = 'financas-familia-v33-3-12-mobile-refeito';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,7 +7,8 @@ const APP_SHELL = [
   './manifest.webmanifest',
   './supabase-config.js',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './icons/social-preview.png'
 ];
 
 self.addEventListener('install', event => {

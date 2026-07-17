@@ -1,5 +1,13 @@
 # Exclusão de despesas
 
+## Nome do aplicativo
+
+- Removida a versão antiga V33.2 do título da aba e do nome exibido quando o site é instalado.
+- O aplicativo passa a aparecer apenas como “Finanças Família”.
+- As chaves internas de armazenamento foram preservadas para que os dados locais existentes não sejam perdidos.
+- Substituído o ícone V33 por um ícone financeiro sem número de versão.
+- Adicionada uma imagem própria de compartilhamento e metadados Open Graph para WhatsApp e redes sociais.
+
 ## Correção da função `digest` no Supabase
 
 - A função criptográfica `digest` passou a ser chamada explicitamente como `extensions.digest`, conforme a organização de extensões do Supabase.
@@ -136,3 +144,12 @@ Nas despesas fixas e variáveis, a exclusão remove o item e seus valores de tod
 - Criada tabela na aba Relatórios para Alimentação, Combustível e Água mineral.
 - A tabela mostra orçamento, gasto, disponível, percentual utilizado e situação.
 - Mês e ano da tabela acompanham os seletores da aba Relatórios.
+
+## Layout exclusivo para celular
+
+- Navegação inferior reorganizada em seis atalhos compactos, sem corte dos nomes.
+- Seletor de usuário removido da sobreposição inferior e colocado antes do conteúdo.
+- Cabeçalhos, filtros, cartões e indicadores reduzidos somente em telas de até 720 px.
+- Gráficos mensais ajustados para exibir os 12 meses sem rolagem ou corte lateral.
+- Cartões de crédito e listas de despesas reorganizados em uma única coluna legível.
+- Mantido integralmente o layout existente para computador.

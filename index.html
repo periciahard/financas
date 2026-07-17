@@ -3,13 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Finanças Família V33.2.2.2.2 Interface Compacta</title>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Finanças Família</title>
+<meta name="description" content="Organização financeira familiar">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Finanças Família">
+<meta property="og:title" content="Finanças Família">
+<meta property="og:description" content="Organização financeira familiar">
+<meta property="og:url" content="https://periciahard.github.io/financas/">
+<meta property="og:image" content="https://periciahard.github.io/financas/icons/social-preview.png?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Finanças Família">
+<meta name="twitter:description" content="Organização financeira familiar">
+<meta name="twitter:image" content="https://periciahard.github.io/financas/icons/social-preview.png?v=1">
+<link rel="manifest" href="manifest.webmanifest?v=33.3.12">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=2">
+<link rel="apple-touch-icon" href="icons/icon-192.png?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Finanças V33.2.2">
+<meta name="apple-mobile-web-app-title" content="Finanças Família">
 <style>
 :root{--bg:#f7f9fc;--card:#fff;--ink:#07142f;--muted:#64748b;--line:#e1e7f0;--pri:#2563eb;--priDark:#1d4ed8;--soft:#f3f7ff;--danger:#b91c1c;--ok:#047857;--warn:#b45309;--shadow:0 18px 40px rgba(15,23,42,.12)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink)}button,input,select{font:inherit}.appShell{min-height:100vh;display:grid;grid-template-columns:260px 1fr}.sidebar{position:sticky;top:0;height:100vh;background:#fff;border-right:1px solid var(--line);padding:28px 16px;display:flex;flex-direction:column;gap:22px}.brand{font-size:20px;font-weight:950;letter-spacing:-.02em;color:var(--ink);padding:0 10px}.brandIcon{display:inline-flex;width:28px;height:28px;border-radius:9px;background:#eaf1ff;color:var(--pri);align-items:center;justify-content:center;margin-right:8px}.sidebar nav{display:grid;gap:10px}.sidebar nav button{width:100%;border:0;background:transparent;border-radius:12px;padding:13px 14px;text-align:left;font-weight:800;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:12px}.sidebar nav button.active{background:#eaf1ff;color:#0b57ff}.navIcon{width:20px;text-align:center;color:inherit}.sidebarFoot{margin-top:auto;border-top:1px solid var(--line);padding:16px 8px;color:var(--muted);font-size:13px}.content{padding:28px 30px 44px;max-width:1480px;width:100%;margin:0 auto}.pageHead{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:18px}.pageTitle h2{font-size:34px;line-height:1.05;margin:0 0 6px;letter-spacing:-.04em}.pageTitle p{margin:0;color:#455677;font-size:16px}.tab{display:none}.tab.active{display:block}h3{margin:0 0 8px;font-size:18px}.sectionTitle{margin-top:18px}
@@ -1518,6 +1532,100 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 .budgetReportCard .tableWrap{margin-top:10px}.budgetReportCard .positive,.budgetReportCard .negative{font-weight:900}
 .monthlyIncomeCard{padding:14px 16px!important}.monthlyIncomeGrid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr)) minmax(170px,.75fr) auto;gap:12px;align-items:end;margin-top:10px}.monthlyIncomeGrid .field{min-width:0}.monthlyIncomeGrid input{width:100%}.monthlyIncomeTotal{min-height:42px;border:1px solid var(--line);border-radius:12px;padding:7px 12px;display:flex;flex-direction:column;justify-content:center;background:rgba(10,20,38,.48)}.monthlyIncomeTotal span{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:.06em}.monthlyIncomeTotal b{font-size:18px;color:var(--gold)}
 @media(max-width:820px){.monthlyIncomeGrid{grid-template-columns:1fr 1fr}.monthlyIncomeGrid .primary{width:100%}}@media(max-width:540px){.monthlyIncomeGrid{grid-template-columns:1fr}}
+
+/* Layout final exclusivo para celular. O desktop permanece inalterado. */
+@media(max-width:720px){
+  html,body{max-width:100%;overflow-x:hidden}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .appShell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;min-width:0!important}
+  .sidebar{display:contents!important}
+  .brand,.sidebarFoot{display:none!important}
+  .userSwitchField{position:relative!important;inset:auto!important;z-index:1!important;order:0;margin:10px 12px 0!important;padding:0!important;min-width:0!important;width:auto!important;display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:9px}
+  .userSwitchField label{font-size:9px!important;white-space:nowrap!important;margin:0!important}
+  .userSwitchField select{height:38px!important;min-width:0!important;padding:7px 10px!important;font-size:14px!important}
+  .sidebar nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:9999!important;display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:2px!important;width:100%!important;height:calc(68px + env(safe-area-inset-bottom));padding:5px 4px env(safe-area-inset-bottom)!important;overflow:hidden!important;background:rgba(7,17,32,.97)!important;border-top:1px solid rgba(148,163,184,.28)!important;box-shadow:0 -8px 28px rgba(0,0,0,.35)!important;backdrop-filter:blur(14px)}
+  .sidebar nav button{min-width:0!important;width:100%!important;height:58px!important;padding:5px 1px!important;border-radius:10px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:2px!important;overflow:hidden!important;font-size:0!important;white-space:nowrap!important}
+  .sidebar nav button::after{font-size:8px!important;line-height:1!important;font-weight:800!important;letter-spacing:0!important;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .sidebar nav button:nth-child(1)::after{content:'Início'}
+  .sidebar nav button:nth-child(2)::after{content:'Fixas'}
+  .sidebar nav button:nth-child(3)::after{content:'Variáveis'}
+  .sidebar nav button:nth-child(4)::after{content:'Cartões'}
+  .sidebar nav button:nth-child(5)::after{content:'Relatórios'}
+  .sidebar nav button:nth-child(6)::after{content:'Mais'}
+  .sidebar nav .navIcon{width:auto!important;font-size:18px!important;line-height:1!important}
+  .content{order:1!important;width:100%!important;min-width:0!important;padding:10px 10px 24px!important;overflow:hidden!important}
+  .tab,#dashboard.executiveDashboard{width:100%!important;min-width:0!important;margin-bottom:0!important}
+  #dashboard.executiveDashboard{padding:10px!important;border-radius:16px!important}
+
+  .pageHead,.inlinePageHead{display:block!important;margin:0 0 10px!important}
+  .pageTitle h2,.executiveHero .dashboardTitle h2{font-size:27px!important;line-height:1.05!important;margin:0 0 4px!important}
+  .pageTitle p,.dashboardTitle p{font-size:12px!important;line-height:1.35!important}
+  .executiveHero{display:block!important;margin:4px 0 10px!important}
+  .summaryMini{display:none!important}
+  .inlinePageHead .toolbar,.pageHead .toolbar{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin:10px 0 0!important}
+  .inlinePageHead .field,.inlinePageHead .field.wide,.pageHead .field,.pageHead .field.wide{min-width:0!important;width:100%!important;margin:0!important}
+  .inlinePageHead .field.wide{grid-column:1/-1!important}
+  .inlinePageHead .toolbar>button,.pageHead .toolbar>button{grid-column:1/-1!important;width:100%!important}
+  .field{gap:3px!important}.field label{font-size:9px!important}
+  input,select{min-width:0!important;width:100%!important;height:40px!important;padding:8px 10px!important;border-radius:10px!important;font-size:14px!important}
+  button.primary,button.ghost{min-height:40px!important;padding:9px 11px!important;border-radius:10px!important;font-size:13px!important}
+
+  .executiveTopBar,.topBar{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin:0 0 10px!important;padding:9px!important;height:auto!important;border-radius:14px!important}
+  .topMonth{display:grid!important;grid-template-columns:36px 24px minmax(0,1fr) minmax(84px,.55fr)!important;gap:6px!important;align-items:center!important}
+  .topMonth select{height:38px!important;min-width:0!important;padding:7px 8px!important}
+  .roundBtn{width:36px!important;height:36px!important}
+  .topActions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .topActions .primary,.topActions .btnConversaDespesa{display:block!important;width:100%!important;font-size:11px!important;padding:8px 5px!important}
+  .topActions #btnPrint,.topActions #btnBackup,.topActions #btnImportBackup{display:none!important}
+
+  #dashboard #kpis,.executiveKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  #dashboard #kpis .kpiExecutive{min-height:66px!important;padding:8px!important;gap:6px!important;overflow:hidden!important}
+  #dashboard #kpis .kpiIconExec{width:27px!important;height:27px!important;font-size:14px!important;flex:0 0 auto!important}
+  #dashboard #kpis .kpiText{min-width:0!important;padding:0!important;overflow:hidden!important}
+  #dashboard #kpis .label{font-size:8px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #dashboard #kpis .value{font-size:14px!important;white-space:nowrap!important;overflow:visible!important;margin-top:3px!important}
+  #dashboard #kpis .kpiGo{display:none!important}
+  #dashboard .sectionTitle{margin-top:11px!important}#dashboard .sectionTitle>h3{font-size:16px!important}
+  .budgetAvailableList,.dashboardCategoryList{grid-template-columns:1fr!important;padding:2px 7px!important}
+  .budgetAvailableRow,.dashboardCategoryRow{padding:7px 3px!important;min-height:0!important}
+  .budgetAvailableRow+ .budgetAvailableRow{padding-left:3px!important;border-left:0!important;border-top:1px solid rgba(148,163,184,.14)!important}
+
+  #fixKpis,#varKpis,#orcCards,.cardsKpiStrip,.cardsSummaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  #fixKpis .kpi,#varKpis .kpi,#orcCards .kpi,.cardsKpi{min-height:64px!important;padding:8px!important;overflow:hidden!important}
+  #fixKpis .kpiIconExec,#varKpis .kpiIconExec,#orcCards .kpiIconExec{width:26px!important;height:26px!important;font-size:14px!important}
+  #fixKpis .label,#varKpis .label,#orcCards .label{font-size:8px!important}
+  #fixKpis .value,#varKpis .value,#orcCards .value{font-size:14px!important;white-space:nowrap!important}
+  #fixKpis .kpi:last-child,#varKpis .kpi:last-child{grid-column:1/-1!important}
+
+  .content .card,.content .chartCard,.content .executivePanel{padding:10px!important;border-radius:13px!important}
+  .content .sectionTitle{margin-top:10px!important}
+  .chartCard h3,.executivePanel h3{font-size:15px!important;margin-bottom:3px!important}
+  .chartCard .small,.executivePanel .small{font-size:10px!important;line-height:1.25!important;margin:0!important}
+  .content .chartBox,.content .executiveChart,.content .executiveChart.compact{display:flex!important;width:100%!important;height:138px!important;min-height:138px!important;padding:15px 2px 3px!important;margin-top:4px!important;gap:1px!important;overflow:hidden!important;justify-content:stretch!important}
+  .content .bar{flex:1 1 0!important;min-width:0!important;width:auto!important;height:116px!important;gap:3px!important;overflow:visible!important}
+  .content .bar .barFill{width:min(18px,72%)!important;min-width:4px!important}
+  .content .bar .barValue{font-size:7px!important;letter-spacing:-.04em!important;max-width:28px!important;overflow:visible!important}
+  .content .bar .barLabel{font-size:8px!important}
+  .chartLegend{font-size:9px!important;gap:4px!important}
+
+  .monthDetails{width:100%!important;overflow:hidden!important}.monthDetails .card{padding:0!important}
+  .monthDetailsHeader{padding:9px 10px!important;font-size:12px!important}
+  .monthRow,.cardMonthRow{grid-template-columns:minmax(0,1fr) auto!important;gap:4px 8px!important;padding:8px 10px!important;width:100%!important;min-width:0!important}
+  .rowName,.expenseName{font-size:12px!important;min-width:0!important;overflow-wrap:anywhere!important}.rowSub,.rowMetaCompact{font-size:9px!important}.rowValue{font-size:12px!important;text-align:right!important}
+  .categoryHead{grid-template-columns:minmax(0,1fr) auto!important;padding:9px 10px!important}.categoryTitle{font-size:12px!important}.categoryMeta{font-size:9px!important}.categoryTotal{font-size:12px!important}.categoryArrow{display:none!important}
+  .expenseRow{grid-template-columns:8px minmax(0,1fr) auto auto!important;gap:5px!important;padding:8px 9px!important}.expenseValue{font-size:11px!important}
+
+  .content .executiveCard{grid-column:1/-1!important;width:100%!important;min-width:0!important;min-height:0!important;padding:10px!important;border-radius:15px!important;gap:8px!important}
+  .content .executiveCardTop{grid-template-columns:42px minmax(0,1fr)!important;gap:8px!important}.content .bankLogo{width:40px!important;height:40px!important}.content .executiveTotal{grid-column:1/-1!important;text-align:left!important}.content .executiveTotal strong{font-size:20px!important}
+  .content .executiveCardStats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}.content .executiveCardStats>div{padding:6px 2px!important}.content .executiveCardStats span{font-size:7px!important}.content .executiveCardStats b{font-size:11px!important}
+  .content .executiveTxList{min-height:0!important;max-height:none!important;overflow:visible!important}.content .executiveTx{grid-template-columns:minmax(0,1fr) auto!important;gap:3px 7px!important;padding:7px 0!important}.content .txParcel,.content .txValor{grid-column:1!important;width:auto!important;min-width:0!important;text-align:left!important}.content .purchaseMenuBtn{grid-column:2!important;grid-row:1/4!important;align-self:center!important}
+  .content .parcelInline{flex-wrap:wrap!important;white-space:normal!important}.content .txValor{font-size:12px!important}
+
+  .commitmentBand{grid-template-columns:auto 1fr auto!important;gap:7px!important;padding:8px!important}.commitText{display:none!important}.commitValue b{font-size:18px!important}
+  .monthlyIncomeGrid{grid-template-columns:1fr!important;gap:7px!important}.monthlyIncomeTotal{min-height:38px!important}
+  .tableWrap{max-width:100%!important;overflow-x:auto!important}table{font-size:10px!important}th,td{padding:7px 6px!important}
+  .modalOverlay{padding:6px!important;z-index:10000!important}.modalCard{max-height:calc(100dvh - 12px)!important;overflow:auto!important}.chatExpenseCard{height:calc(100dvh - 12px)!important}
+}
 </style>
 </head>
 <body>
@@ -1645,14 +1753,14 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=33.3.9"></script>
-<script src="financeiro-data.js?v=33.3.9"></script>
-<script src="app.js?v=33.3.9"></script>
+<script src="supabase-config.js?v=33.3.12"></script>
+<script src="financeiro-data.js?v=33.3.12"></script>
+<script src="app.js?v=33.3.12"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
     try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.9',{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.12',{updateViaCache:'none'});
       await reg.update();
       let refreshed=false;
       navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!refreshed){refreshed=true;location.reload()}});
