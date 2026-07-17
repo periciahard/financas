@@ -38,7 +38,7 @@ const FATURA_NUBANK_FELIPE_AGOSTO_2026=[
   {id:'oboticario-2',data:'2026-06-26',empresa:'Hna*Oboticario',valor:30.78,atual:2,total:10,categoria:'Compras'}
 ];
 const TABS=[['dashboard','Dashboard','📊'],['fixas','Despesas fixas','🏠'],['variaveis','Despesas variáveis','🛒'],['cartoes','Cartões','💳'],['orcamentos','Relatórios','📈'],['historico','Exportar / Backup','☁️']];
-const APP_VERSION='V33.3.15';
+const APP_VERSION='V33.3.16';
 const STORE='financasFamiliaV33_2_2InterfaceCompacta';
 const HIST='financasFamiliaHistoricoV33_2_2InterfaceCompacta';
 let state=null;
@@ -796,11 +796,12 @@ function renderCartoes(){
   const detailRows=state.comprasCartao.filter(c=>norm(c.mes)===norm(selectedCartoesMes)&&Number(c.ano||anoBase())===ano).map(c=>({id:c.id,nome:compraTitulo(c),cartao:c.cartao,categoria:c.categoria||catEmpresa(c.empresa),status:statusParcela(c),valor:c.valor}));
   monthDetail('cartoesMesDetalhe',`Compras de ${selectedCartoesMes}/${ano}`,detailRows.reduce((s,r)=>s+Number(r.valor||0),0),detailRows,'cartoes');
   $('cartoesGrid').innerHTML=porCartao.map((c,i)=>`
-    <div class="executiveCard brand-${c.brand.brand}">
-      <div class="executiveCardTop">
+    <div class="executiveCard brand-${c.brand.brand} mobileCardCollapsed">
+      <div class="executiveCardTop" data-card-toggle role="button" tabindex="0" aria-expanded="false" aria-label="Mostrar ou ocultar compras de ${esc(c.cartao)}">
         ${cardLogoHtml(c.cartao)}
         <div class="executiveCardTitle"><h3><button type="button" class="editableText cardTitleEdit" data-edit-card-name="${esc(c.cartao)}" title="Clique para alterar o nome do cartão">${esc(c.cartao)}</button></h3><small>${c.itens.length} compras no mês</small></div>
         <div class="executiveTotal"><span>Fatura</span><strong>${fmt(c.total)}</strong></div>
+        <span class="mobileCardChevron" aria-hidden="true">⌄</span>
       </div>
       <div class="executiveLimitBlock">
         <div class="limitRow"><span>Limite disponível</span><button type="button" class="editableText limitEdit" data-edit-card-limit="${esc(c.cartao)}" title="Clique para alterar o limite do cartão"><b>${fmt(Math.max(0,c.limite-c.total))}</b></button></div>
@@ -1024,6 +1025,8 @@ function init(){state=load();state.config=state.config||{};state.config.category
   if($('editModal'))$('editModal').onclick=e=>{if(e.target.id==='editModal')closeEditModal()};
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEditModal();closeChatExpense()}});
   document.addEventListener('click',e=>{
+    const cardToggle=e.target.closest('[data-card-toggle]');
+    if(cardToggle&&window.matchMedia('(max-width: 720px)').matches&&!e.target.closest('button,a,input,select')){const card=cardToggle.closest('.executiveCard');if(card){card.classList.toggle('mobileCardCollapsed');cardToggle.setAttribute('aria-expanded',String(!card.classList.contains('mobileCardCollapsed')))}return;}
     const menuButton=e.target.closest('[data-purchase-menu]');
     if(menuButton){e.preventDefault();e.stopPropagation();openPurchaseMenu(menuButton,menuButton.dataset.purchaseMenu);return;}
     const menuCategory=e.target.closest('[data-menu-category],[data-change-card-category]');
@@ -1046,6 +1049,7 @@ function init(){state=load();state.config=state.config||{};state.config.category
     const cname=e.target.closest('[data-edit-card-name]');
     if(cname){e.preventDefault();e.stopPropagation();editCardName(cname.dataset.editCardName);return;}
   });
+  document.addEventListener('keydown',e=>{if(window.matchMedia('(max-width: 720px)').matches&&(e.key==='Enter'||e.key===' ')&&e.target.matches('[data-card-toggle]')){e.preventDefault();e.target.click()}});
   show('dashboard')}
 window.addEventListener('DOMContentLoaded',()=>{try{init()}catch(e){console.error(e);document.body.insertAdjacentHTML('afterbegin',`<div class="alert"><b>Erro ao iniciar:</b> ${esc(e.message||e)}</div>`)}});
 })();

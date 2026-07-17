@@ -1,4 +1,4 @@
-const CACHE_NAME = 'financas-familia-v33-3-15-icone-financeiro';
+const CACHE_NAME = 'financas-familia-v33-3-16-cartoes-recolhidos';
 const APP_SHELL = [
   './',
   './index.html',

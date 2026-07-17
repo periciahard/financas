@@ -172,3 +172,10 @@ Nas despesas fixas e variáveis, a exclusão remove o item e seus valores de tod
 
 - Criado ícone financeiro com carteira e símbolo “R$” para o atalho salvo na tela inicial do celular.
 - Atualizadas as referências do manifesto, favicon e ícone do iPhone para evitar o reaproveitamento do ícone antigo.
+
+## Cartões recolhidos no celular
+
+- Cada cartão de crédito inicia recolhido na versão móvel.
+- O resumo exibe banco, nome do cartão, quantidade de compras e valor da fatura.
+- Um toque no cabeçalho expande ou recolhe limite, indicadores e compras do cartão.
+- O comportamento da versão para computador permanece inalterado.
