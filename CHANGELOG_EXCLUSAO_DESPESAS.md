@@ -1,5 +1,11 @@
 # Exclusão de despesas
 
+## Correção do salvamento no Supabase
+
+- Corrigido o erro `Maximum call stack size exceeded` ao salvar bases financeiras grandes na nuvem.
+- A conversão do conteúdo criptografado para Base64 agora é realizada em blocos, sem ultrapassar o limite de chamadas do navegador.
+- A leitura do backup também passou a usar conversão iterativa, compatível com arquivos maiores.
+
 ## Supabase configurado
 
 - Adicionada a URL pública do projeto Supabase e sua chave publicável ao arquivo de configuração.

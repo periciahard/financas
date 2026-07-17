@@ -1645,14 +1645,14 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=33.3.8"></script>
-<script src="financeiro-data.js?v=33.3.8"></script>
-<script src="app.js?v=33.3.8"></script>
+<script src="supabase-config.js?v=33.3.9"></script>
+<script src="financeiro-data.js?v=33.3.9"></script>
+<script src="app.js?v=33.3.9"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
     try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.8',{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.9',{updateViaCache:'none'});
       await reg.update();
       let refreshed=false;
       navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!refreshed){refreshed=true;location.reload()}});

@@ -285,8 +285,16 @@ function getLastSync(){return localStorage.getItem(lastSyncKey())||''}
 function setLastSync(iso){if(iso)localStorage.setItem(lastSyncKey(),iso)}
 
 // --- Criptografia local dos dados antes de irem para a nuvem (AES-GCM, chave derivada do código familiar) ---
-function bufToB64(buf){return btoa(String.fromCharCode(...new Uint8Array(buf)))}
-function b64ToBuf(b64){return Uint8Array.from(atob(b64),c=>c.charCodeAt(0))}
+function bufToB64(buf){
+  const bytes=new Uint8Array(buf),chunk=0x8000,parts=[];
+  for(let i=0;i<bytes.length;i+=chunk)parts.push(String.fromCharCode.apply(null,bytes.subarray(i,i+chunk)));
+  return btoa(parts.join(''));
+}
+function b64ToBuf(b64){
+  const binary=atob(b64),bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+  return bytes;
+}
 async function deriveCryptoKey(familyKeyStr){
   const enc=new TextEncoder();
   const keyMaterial=await crypto.subtle.importKey('raw',enc.encode(familyKeyStr),{name:'PBKDF2'},false,['deriveKey']);

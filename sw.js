@@ -1,4 +1,4 @@
-const CACHE_NAME = 'financas-familia-v33-3-8-supabase-configurado';
+const CACHE_NAME = 'financas-familia-v33-3-9-backup-grande';
 const APP_SHELL = [
   './',
   './index.html',
