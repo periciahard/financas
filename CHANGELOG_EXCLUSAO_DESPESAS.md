@@ -1,5 +1,11 @@
 # Exclusão de despesas
 
+## Correção da função `digest` no Supabase
+
+- A função criptográfica `digest` passou a ser chamada explicitamente como `extensions.digest`, conforme a organização de extensões do Supabase.
+- O script agora garante a existência do esquema `extensions` antes de habilitar o `pgcrypto`.
+- Corrigido o erro `function digest(text, unknown) does not exist` ao salvar ou carregar dados na nuvem.
+
 ## Correção do salvamento no Supabase
 
 - Corrigido o erro `Maximum call stack size exceeded` ao salvar bases financeiras grandes na nuvem.

@@ -12,14 +12,15 @@ alter table family_states enable row level security;
 -- Não criar políticas SELECT/INSERT/UPDATE abertas para anon.
 -- O frontend usa somente as funções abaixo.
 
-create extension if not exists pgcrypto;
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
 
 create or replace function family_hash_key(p_family_key text)
 returns text
 language sql
 stable
 as $$
-  select encode(digest(coalesce(p_family_key,'') || ':financas-familia-v32-2', 'sha256'), 'hex');
+  select encode(extensions.digest(coalesce(p_family_key,'') || ':financas-familia-v32-2', 'sha256'), 'hex');
 $$;
 
 create or replace function family_save_state(p_family_key text, p_payload jsonb)
@@ -89,7 +90,7 @@ declare
   fh text;
   ev jsonb;
 begin
-  fh := encode(digest(p_family_key || ':financas-familia-v32-2', 'sha256'), 'hex');
+  fh := encode(extensions.digest(p_family_key || ':financas-familia-v32-2', 'sha256'), 'hex');
   for ev in select * from jsonb_array_elements(p_events)
   loop
     insert into public.family_history(family_hash,event) values (fh,ev);
@@ -106,7 +107,7 @@ declare
   fh text;
   result jsonb;
 begin
-  fh := encode(digest(p_family_key || ':financas-familia-v32-2', 'sha256'), 'hex');
+  fh := encode(extensions.digest(p_family_key || ':financas-familia-v32-2', 'sha256'), 'hex');
   select coalesce(jsonb_agg(event order by created_at desc), '[]'::jsonb)
   into result
   from (
@@ -144,7 +145,7 @@ declare
   result jsonb;
 begin
   -- Mantém o mesmo sal da versão vigente do histórico para não quebrar dados existentes.
-  fh := encode(digest(p_family_key || ':financas-familia-v32-2', 'sha256'), 'hex');
+  fh := encode(extensions.digest(p_family_key || ':financas-familia-v32-2', 'sha256'), 'hex');
 
   select coalesce(jsonb_agg(event order by created_at desc), '[]'::jsonb)
   into result
