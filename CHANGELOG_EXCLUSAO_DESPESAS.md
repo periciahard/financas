@@ -153,3 +153,11 @@ Nas despesas fixas e variáveis, a exclusão remove o item e seus valores de tod
 - Gráficos mensais ajustados para exibir os 12 meses sem rolagem ou corte lateral.
 - Cartões de crédito e listas de despesas reorganizados em uma única coluna legível.
 - Mantido integralmente o layout existente para computador.
+
+## Ações rápidas, categorias e receitas extras
+
+- Adicionados aos cabeçalhos de todas as abas os botões 💾 para salvar no Supabase e 🔄 para atualizar os dados pela nuvem.
+- Adicionado o botão ＋🏷️ para criar categorias personalizadas em qualquer aba.
+- Categorias criadas ficam disponíveis nos formulários, compras de cartão e alterações de categoria, além de serem sincronizadas com os demais dados.
+- Incluído o campo “Receitas extras” nas receitas mensais.
+- Receitas extras passam a compor o total de receitas, o saldo e todas as projeções e relatórios.

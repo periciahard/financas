@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="Finanças Família">
 <meta name="twitter:description" content="Organização financeira familiar">
 <meta name="twitter:image" content="https://periciahard.github.io/financas/icons/social-preview.png?v=1">
-<link rel="manifest" href="manifest.webmanifest?v=33.3.12">
+<link rel="manifest" href="manifest.webmanifest?v=33.3.13">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=2">
 <link rel="apple-touch-icon" href="icons/icon-192.png?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1530,7 +1530,8 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 .budgetAvailableList{padding:4px 10px!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 18px}.budgetAvailableRow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:10px 4px}.budgetAvailableRow+ .budgetAvailableRow{border-left:1px solid rgba(148,163,184,.14);padding-left:18px}.budgetAvailableRow strong{display:block;font-size:12px;text-transform:uppercase}.budgetAvailableRow small{display:block;color:#8fa0bb;font-size:10px;margin-top:2px}.budgetAvailableRow>div:nth-child(2){text-align:right}.budgetAvailableRow span{display:block;color:#8fa0bb;font-size:9px;text-transform:uppercase}.budgetAvailableRow b{font-size:15px;color:#43e486}.budgetAvailableRow.warning b{color:#f6c945}.budgetAvailableRow.over b{color:#ff6b6b}.budgetMiniBar{grid-column:1/-1;height:4px;background:#1d2a40;border-radius:99px;overflow:hidden}.budgetMiniBar i{display:block;height:100%;background:#43e486;border-radius:inherit}.budgetAvailableRow.warning .budgetMiniBar i{background:#f6c945}.budgetAvailableRow.over .budgetMiniBar i{background:#ff6b6b}
 @media(max-width:850px){.budgetAvailableList{grid-template-columns:1fr}.budgetAvailableRow+ .budgetAvailableRow{border-left:0;border-top:1px solid rgba(148,163,184,.14);padding-left:4px}}
 .budgetReportCard .tableWrap{margin-top:10px}.budgetReportCard .positive,.budgetReportCard .negative{font-weight:900}
-.monthlyIncomeCard{padding:14px 16px!important}.monthlyIncomeGrid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr)) minmax(170px,.75fr) auto;gap:12px;align-items:end;margin-top:10px}.monthlyIncomeGrid .field{min-width:0}.monthlyIncomeGrid input{width:100%}.monthlyIncomeTotal{min-height:42px;border:1px solid var(--line);border-radius:12px;padding:7px 12px;display:flex;flex-direction:column;justify-content:center;background:rgba(10,20,38,.48)}.monthlyIncomeTotal span{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:.06em}.monthlyIncomeTotal b{font-size:18px;color:var(--gold)}
+.monthlyIncomeCard{padding:14px 16px!important}.monthlyIncomeGrid{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr)) minmax(150px,.75fr) auto;gap:12px;align-items:end;margin-top:10px}.monthlyIncomeGrid .field{min-width:0}.monthlyIncomeGrid input{width:100%}.monthlyIncomeTotal{min-height:42px;border:1px solid var(--line);border-radius:12px;padding:7px 12px;display:flex;flex-direction:column;justify-content:center;background:rgba(10,20,38,.48)}.monthlyIncomeTotal span{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:.06em}.monthlyIncomeTotal b{font-size:18px;color:var(--gold)}
+.headerCloudActions{display:flex;align-items:center;gap:7px;margin-left:auto}.headerIconBtn{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(148,163,184,.28);border-radius:11px;background:rgba(255,255,255,.06);color:#f8fafc;font-size:17px;cursor:pointer}.headerIconBtn:hover{border-color:rgba(246,201,69,.55);background:rgba(246,201,69,.12)}
 @media(max-width:820px){.monthlyIncomeGrid{grid-template-columns:1fr 1fr}.monthlyIncomeGrid .primary{width:100%}}@media(max-width:540px){.monthlyIncomeGrid{grid-template-columns:1fr}}
 
 /* Layout final exclusivo para celular. O desktop permanece inalterado. */
@@ -1577,6 +1578,8 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
   .topActions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
   .topActions .primary,.topActions .btnConversaDespesa{display:block!important;width:100%!important;font-size:11px!important;padding:8px 5px!important}
   .topActions #btnPrint,.topActions #btnBackup,.topActions #btnImportBackup{display:none!important}
+  .headerCloudActions{grid-column:1/-1!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;width:100%!important;margin:0!important;gap:7px!important}
+  .headerIconBtn{width:100%!important;height:38px!important}
 
   #dashboard #kpis,.executiveKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
   #dashboard #kpis .kpiExecutive{min-height:66px!important;padding:8px!important;gap:6px!important;overflow:hidden!important}
@@ -1670,7 +1673,7 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 <section id="orcamentos" class="tab">
   <div class="pageHead"><div class="pageTitle"><h2>Relatórios</h2><p>Análises, indicadores, evolução e detalhamento financeiro</p></div><div class="toolbar"><div class="field"><label>Mês</label><select id="orcMes"></select></div><div class="field yearField"><label>Ano</label><select id="orcAno"></select></div></div></div>
   <div id="orcCards" class="grid"></div>
-  <div class="card sectionTitle monthlyIncomeCard"><h3>Receitas mensais</h3><div class="monthlyIncomeGrid"><div class="field"><label for="incomeFelipe">Receita de Felipe</label><input id="incomeFelipe" type="text" inputmode="decimal" placeholder="R$ 0,00"></div><div class="field"><label for="incomeRafaela">Receita de Rafaela</label><input id="incomeRafaela" type="text" inputmode="decimal" placeholder="R$ 0,00"></div><div class="monthlyIncomeTotal"><span>Total do mês</span><b id="incomeTotal">R$ 0,00</b></div><button id="btnSalvarReceitas" class="primary" type="button">Salvar receitas</button></div></div>
+  <div class="card sectionTitle monthlyIncomeCard"><h3>Receitas mensais</h3><div class="monthlyIncomeGrid"><div class="field"><label for="incomeFelipe">Receita de Felipe</label><input id="incomeFelipe" type="text" inputmode="decimal" placeholder="R$ 0,00"></div><div class="field"><label for="incomeRafaela">Receita de Rafaela</label><input id="incomeRafaela" type="text" inputmode="decimal" placeholder="R$ 0,00"></div><div class="field"><label for="incomeExtras">Receitas extras</label><input id="incomeExtras" type="text" inputmode="decimal" placeholder="R$ 0,00"></div><div class="monthlyIncomeTotal"><span>Total do mês</span><b id="incomeTotal">R$ 0,00</b></div><button id="btnSalvarReceitas" class="primary" type="button">Salvar receitas</button></div></div>
   <div class="card sectionTitle budgetReportCard"><h3>Orçamentos de consumo</h3><div class="small">Valor planejado, gasto acumulado e saldo ainda disponível no período selecionado.</div><div class="tableWrap"><table id="tblBudgetReport"></table></div></div>
   <div id="commitmentBand" class="commitmentBand executiveCommitment sectionTitle"></div>
   <div class="executiveMainGrid sectionTitle">
@@ -1753,14 +1756,14 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=33.3.12"></script>
-<script src="financeiro-data.js?v=33.3.12"></script>
-<script src="app.js?v=33.3.12"></script>
+<script src="supabase-config.js?v=33.3.13"></script>
+<script src="financeiro-data.js?v=33.3.13"></script>
+<script src="app.js?v=33.3.13"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
     try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.12',{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.13',{updateViaCache:'none'});
       await reg.update();
       let refreshed=false;
       navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!refreshed){refreshed=true;location.reload()}});

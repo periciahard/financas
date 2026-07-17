@@ -1,4 +1,4 @@
-const CACHE_NAME = 'financas-familia-v33-3-12-mobile-refeito';
+const CACHE_NAME = 'financas-familia-v33-3-13-acoes-nuvem-categorias-receitas';
 const APP_SHELL = [
   './',
   './index.html',

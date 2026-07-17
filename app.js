@@ -38,7 +38,7 @@ const FATURA_NUBANK_FELIPE_AGOSTO_2026=[
   {id:'oboticario-2',data:'2026-06-26',empresa:'Hna*Oboticario',valor:30.78,atual:2,total:10,categoria:'Compras'}
 ];
 const TABS=[['dashboard','Dashboard','📊'],['fixas','Despesas fixas','🏠'],['variaveis','Despesas variáveis','🛒'],['cartoes','Cartões','💳'],['orcamentos','Relatórios','📈'],['historico','Exportar / Backup','☁️']];
-const APP_VERSION='V33.3.10';
+const APP_VERSION='V33.3.13';
 const STORE='financasFamiliaV33_2_2InterfaceCompacta';
 const HIST='financasFamiliaHistoricoV33_2_2InterfaceCompacta';
 let state=null;
@@ -99,6 +99,21 @@ function autoCategoriaVariavel(nome){const n=norm(nome);if(/lanche|alimentacao|f
 function overrideKey(tipo,nome){return tipo+':'+norm(nome)}
 function categoriaItem(tipo,item){const nome=item.nome||item.item||item.descricao||'Sem nome';const key=overrideKey(tipo,nome);const ov=state?.config?.categoryOverrides?.[key];if(ov)return ov;return tipo==='fixas'?autoCategoriaFixa(nome):autoCategoriaVariavel(nome)}
 function setCategoria(tipo,nome,categoria){state.config=state.config||{};state.config.categoryOverrides=state.config.categoryOverrides||{};state.config.categoryOverrides[overrideKey(tipo,nome)]=categoria;save();addHist('Categoria alterada',`${nome}: ${categoria}`)}
+function syncCustomCategories(){
+  const extras=Array.isArray(state?.config?.customCategories)?state.config.customCategories:[];
+  extras.forEach(cat=>{const clean=String(cat||'').trim();if(clean&&!CATEGORIAS.some(x=>norm(x)===norm(clean)))CATEGORIAS.push(clean)});
+}
+function createCategory(){
+  const nome=prompt('Nome da nova categoria de despesa:');
+  if(nome===null)return;
+  const clean=String(nome).trim().replace(/\s+/g,' ');
+  if(clean.length<2){alert('Informe um nome de categoria válido.');return;}
+  if(CATEGORIAS.some(x=>norm(x)===norm(clean))){alert('Essa categoria já existe.');return;}
+  state.config=state.config||{};state.config.customCategories=Array.isArray(state.config.customCategories)?state.config.customCategories:[];
+  state.config.customCategories.push(clean);CATEGORIAS.push(clean);save();addHist('Categoria criada',clean);
+  if($('expenseCategoria'))$('expenseCategoria').innerHTML=CATEGORIAS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  alert(`Categoria “${clean}” criada com sucesso.`);render();
+}
 
 function statusFromFields(c){
   const atual=Number(c?.parcelaAtual||0), total=Number(c?.parcelaTotal||0);
@@ -356,7 +371,7 @@ async function cloudLoad(){
     catch(e){throw new Error('Não foi possível decodificar os dados. Confira se o código familiar está correto.');}
     if(!inner||!inner.state)throw new Error('Nenhum backup encontrado para este código.');
     if(!confirm('Substituir os dados locais pelos dados salvos no Supabase?'))return;
-    state=normalize(inner.state);save();
+    state=normalize(inner.state);syncCustomCategories();save();
     if(Array.isArray(inner.history))localStorage.setItem(HIST,JSON.stringify(inner.history.slice(0,500)));
     setLastSync(data.savedAt||new Date().toISOString());
     addHist('Sincronização em nuvem','Backup restaurado e decodificado do Supabase');
@@ -487,11 +502,11 @@ function receitasDoMes(m,ano){
   const mapa=state?.config?.receitasMensais||{},key=receitaKey(m,ano);
   let registro=Object.prototype.hasOwnProperty.call(mapa,key)?mapa[key]:null;
   if(!registro){const anterior=Object.keys(mapa).filter(k=>k<=key).sort().pop();if(anterior)registro=mapa[anterior]}
-  if(registro){const felipe=Number(registro.felipe||0),rafaela=Number(registro.rafaela||0);return{felipe,rafaela,total:felipe+rafaela}}
+  if(registro){const felipe=Number(registro.felipe||0),rafaela=Number(registro.rafaela||0),extras=Number(registro.extras||0);return{felipe,rafaela,extras,total:felipe+rafaela+extras}}
   const legado=Number(Number(ano||anoBase())===anoBase()?orcMes(m).receitas:0)||receitaBaseLegada();
-  return{felipe:legado,rafaela:0,total:legado};
+  return{felipe:legado,rafaela:0,extras:0,total:legado};
 }
-function receitaBase(){const mapa=state?.config?.receitasMensais||{},ultima=Object.keys(mapa).sort().pop();if(ultima){const r=mapa[ultima]||{};return Number(r.felipe||0)+Number(r.rafaela||0)}return receitaBaseLegada()}
+function receitaBase(){const mapa=state?.config?.receitasMensais||{},ultima=Object.keys(mapa).sort().pop();if(ultima){const r=mapa[ultima]||{};return Number(r.felipe||0)+Number(r.rafaela||0)+Number(r.extras||0)}return receitaBaseLegada()}
 function deveUsarRecorrencia(m,ano){const base=anoBase();if(Number(ano||base)>base)return true;return MESES.indexOf(m)>=MESES.indexOf('julho')}
 function somaFixasPermanentes(){return (state.fixas||[]).reduce((s,x)=>s+Number(x.valorRecorrente||valorBaseFixa(x)||0),0)}
 function projecao(m,ano){const base=anoBase(),yr=Number(ano||base),o=orcMes(m),compras=comprasMes(m,yr),usarRecorrencia=deveUsarRecorrencia(m,yr);const fixas=usarRecorrencia?somaFixasPermanentes():Number(o.fixas??soma(state.fixas,m));const variaveis=Number((!usarRecorrencia&&o.variaveis!==undefined)?o.variaveis:soma(variaveisSemCartao(),m));const cartoes=Number((!usarRecorrencia&&o.cartoes!==undefined)?o.cartoes:compras.reduce((s,c)=>s+Number(c.valor||0),0));const despesasCalc=fixas+variaveis+cartoes;const receitas=receitasDoMes(m,yr).total;const despesas=usarRecorrencia?despesasCalc:(Number(o.despesas_planilha||0)||despesasCalc);const saldo=receitas-despesas;return{mes:m,ano:yr,receitas,fixas,variaveis,cartoes,despesas,saldo}}
@@ -803,14 +818,14 @@ function renderCartoes(){
 }
 
 function inputMoney(v){return Number(v||0).toFixed(2).replace('.',',')}
-function updateIncomeTotal(){const el=$('incomeTotal');if(el)el.textContent=fmt(parseMoney($('incomeFelipe')?.value)+parseMoney($('incomeRafaela')?.value))}
-function renderMonthlyIncome(mes,ano){const r=receitasDoMes(mes,ano);if($('incomeFelipe'))$('incomeFelipe').value=inputMoney(r.felipe);if($('incomeRafaela'))$('incomeRafaela').value=inputMoney(r.rafaela);updateIncomeTotal()}
+function updateIncomeTotal(){const el=$('incomeTotal');if(el)el.textContent=fmt(parseMoney($('incomeFelipe')?.value)+parseMoney($('incomeRafaela')?.value)+parseMoney($('incomeExtras')?.value))}
+function renderMonthlyIncome(mes,ano){const r=receitasDoMes(mes,ano);if($('incomeFelipe'))$('incomeFelipe').value=inputMoney(r.felipe);if($('incomeRafaela'))$('incomeRafaela').value=inputMoney(r.rafaela);if($('incomeExtras'))$('incomeExtras').value=inputMoney(r.extras);updateIncomeTotal()}
 function saveMonthlyIncome(){
   const mes=$('orcMes')?.value||currentMes(),ano=Number($('orcAno')?.value||anoBase());
-  const felipe=parseMoney($('incomeFelipe')?.value),rafaela=parseMoney($('incomeRafaela')?.value);
+  const felipe=parseMoney($('incomeFelipe')?.value),rafaela=parseMoney($('incomeRafaela')?.value),extras=parseMoney($('incomeExtras')?.value);
   state.config=state.config||{};state.config.receitasMensais=state.config.receitasMensais||{};
-  state.config.receitasMensais[receitaKey(mes,ano)]={felipe,rafaela};
-  save();addHist('Receitas mensais atualizadas',`${mes}/${ano} · Felipe ${fmt(felipe)} · Rafaela ${fmt(rafaela)}`);renderOrc();
+  state.config.receitasMensais[receitaKey(mes,ano)]={felipe,rafaela,extras};
+  save();addHist('Receitas mensais atualizadas',`${mes}/${ano} · Felipe ${fmt(felipe)} · Rafaela ${fmt(rafaela)} · Extras ${fmt(extras)}`);renderOrc();
 }
 function renderOrc(){options('orcMes',MESES,$('orcMes')?.value||currentMes());options('orcAno',ANOS,$('orcAno')?.value||anoBase());const mes=$('orcMes').value,ano=Number($('orcAno').value||anoBase()),p=projecao(mes,ano),compras=comprasMes(mes,ano);kpis([['Receitas',fmt(p.receitas),'receitas do mês'],['Despesas',fmt(p.despesas),'despesas projetadas'],['Cartões',fmt(p.cartoes),'faturas do mês'],[p.saldo>=0?'Superávit':'Déficit',fmt(p.saldo),p.saldo>=0?'saldo positivo':'saldo negativo',p.saldo>=0?'positive':'negative']], 'orcCards');renderMonthlyIncome(mes,ano);renderBudgetReport(mes,ano);renderInsights(mes,ano);renderDistrib(mes,ano);renderSaldoChart(ano);renderCommitmentBand(mes,p);table('tblResumo',[{t:'Item',k:'item'},{t:'Valor',num:1,f:r=>fmt(r.valor)}],[{item:'Receitas',valor:p.receitas},{item:'Despesas fixas',valor:p.fixas},{item:'Despesas variáveis',valor:p.variaveis},{item:'Cartões',valor:p.cartoes},{item:'Total de despesas',valor:p.despesas},{item:p.saldo>=0?'Superávit':'Déficit',valor:p.saldo}]);table('tblTopEmp',[{t:'Empresa',k:'nome'},{t:'Total',num:1,f:r=>fmt(r.total)}],top(compras,'empresa',15));table('tblOrc',[{t:'Item',k:'nome'},{t:'Valor',num:1,f:r=>fmt(r.valor)}],[{nome:'Receitas',valor:p.receitas},{nome:'Despesas totais',valor:p.despesas},{nome:'Fixas',valor:p.fixas},{nome:'Variáveis',valor:p.variaveis},{nome:'Cartões',valor:p.cartoes},{nome:p.saldo>=0?'Superávit':'Déficit',valor:p.saldo}]);table('tblProjecao',[{t:'Mês/Ano',f:r=>r.label||r.mes},{t:'Receitas',num:1,f:r=>fmt(r.receitas)},{t:'Despesas',num:1,f:r=>fmt(r.despesas)},{t:'Cartões',num:1,f:r=>fmt(r.cartoes)},{t:'Saldo projetado',num:1,f:r=>`<span class="${r.saldo>=0?'positive':'negative'}">${fmt(r.saldo)}</span>`},{t:'Status',f:r=>r.saldo>=0?'Superávit':'Déficit'}],mesesProjecaoRolante(mes,ano).map(x=>({...projecao(x.mes,x.ano),ano:x.ano,label:x.label})))}
 function saveOrc(){save();renderOrc()}
@@ -958,10 +973,23 @@ function closeChatExpense(){const modal=$('chatExpenseModal');if(modal){modal.cl
 function show(id){active=id;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));render()}
 function render(){({dashboard:renderDashboard,fixas:renderFixas,variaveis:renderVariaveis,cartoes:renderCartoes,orcamentos:renderOrc,historico:renderHist}[active]||renderDashboard)()}
 function backup(){const payload={version:APP_VERSION,exportedAt:new Date().toISOString(),state};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));a.download='backup-financas-familia-v33.2.2.2-final-limpa.json';a.click();URL.revokeObjectURL(a.href)}
-function importBackupFile(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);const imported=normalize(data.state||data);if(!imported.fixas.length&&!imported.variaveis.length&&!imported.comprasCartao.length)throw new Error('O arquivo não contém dados financeiros reconhecidos.');state=imported;save();addHist('Backup importado',file.name||'arquivo JSON');alert('Backup importado com sucesso.');render();}catch(e){alert('Não foi possível importar o backup: '+(e.message||e));}};reader.readAsText(file)}
+function importBackupFile(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);const imported=normalize(data.state||data);if(!imported.fixas.length&&!imported.variaveis.length&&!imported.comprasCartao.length)throw new Error('O arquivo não contém dados financeiros reconhecidos.');state=imported;syncCustomCategories();save();addHist('Backup importado',file.name||'arquivo JSON');alert('Backup importado com sucesso.');render();}catch(e){alert('Não foi possível importar o backup: '+(e.message||e));}};reader.readAsText(file)}
 function reset(){if(confirm('Restaurar os dados originais da V33.2.2.2.2 Interface Compacta?')){const prefixes=['financasFamilia','backup-financas-familia'];for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k==='ff_user'||prefixes.some(p=>String(k).startsWith(p)))localStorage.removeItem(k)}location.reload()}}
-function init(){state=load();state.config=state.config||{};state.config.categoryOverrides=state.config.categoryOverrides||{};save();const nav=$('nav');nav.innerHTML=TABS.map(([id,n,ic])=>`<button data-tab="${id}"><span class="navIcon">${esc(ic||'')}</span><span>${esc(n)}</span></button>`).join('');nav.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+function installHeaderActions(){
+  document.querySelectorAll('.tab').forEach(tab=>{
+    let host=tab.id==='dashboard'?tab.querySelector('.topActions'):tab.querySelector('.pageHead .toolbar');
+    if(!host){host=document.createElement('div');host.className='toolbar';tab.querySelector('.pageHead')?.appendChild(host)}
+    if(!host||host.querySelector('.headerCloudActions'))return;
+    const actions=document.createElement('div');actions.className='headerCloudActions';actions.innerHTML='<button type="button" class="headerIconBtn btnHeaderCloudSave" title="Salvar dados no Supabase" aria-label="Salvar dados no Supabase">💾</button><button type="button" class="headerIconBtn btnHeaderCloudLoad" title="Atualizar dados do Supabase" aria-label="Atualizar dados do Supabase">🔄</button><button type="button" class="headerIconBtn btnHeaderNewCategory" title="Criar nova categoria" aria-label="Criar nova categoria">＋🏷️</button>';
+    host.appendChild(actions);
+  });
+  document.querySelectorAll('.btnHeaderCloudSave').forEach(b=>b.onclick=cloudSave);
+  document.querySelectorAll('.btnHeaderCloudLoad').forEach(b=>b.onclick=cloudLoad);
+  document.querySelectorAll('.btnHeaderNewCategory').forEach(b=>b.onclick=createCategory);
+}
+function init(){state=load();state.config=state.config||{};state.config.categoryOverrides=state.config.categoryOverrides||{};syncCustomCategories();save();const nav=$('nav');nav.innerHTML=TABS.map(([id,n,ic])=>`<button data-tab="${id}"><span class="navIcon">${esc(ic||'')}</span><span>${esc(n)}</span></button>`).join('');nav.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
   initUserSelect();
+  installHeaderActions();
   document.querySelectorAll('.btnNovaDespesaAlt').forEach(b=>{if(!b.parentElement.querySelector('.btnConversaDespesa')){const chatBtn=document.createElement('button');chatBtn.type='button';chatBtn.className='ghost btnConversaDespesa';chatBtn.textContent='💬 Assistente financeiro';b.insertAdjacentElement('afterend',chatBtn)}});
   document.querySelectorAll('.btnConversaDespesa').forEach(b=>b.onclick=openChatExpense);
   if($('chatExpenseClose'))$('chatExpenseClose').onclick=closeChatExpense;
@@ -986,6 +1014,7 @@ function init(){state=load();state.config=state.config||{};state.config.category
   if($('btnSalvarReceitas'))$('btnSalvarReceitas').onclick=saveMonthlyIncome;
   if($('incomeFelipe'))$('incomeFelipe').oninput=updateIncomeTotal;
   if($('incomeRafaela'))$('incomeRafaela').oninput=updateIncomeTotal;
+  if($('incomeExtras'))$('incomeExtras').oninput=updateIncomeTotal;
   $('btnHistManual').onclick=()=>{const d=prompt('Descreva a alteração:');if(d){addHist('Registro manual',d);renderHist()}};if($('familyKey'))$('familyKey').onchange=e=>{setFamilyKey(e.target.value);renderCloudStatus()};if($('btnCloudSave'))$('btnCloudSave').onclick=cloudSave;if($('btnCloudLoad'))$('btnCloudLoad').onclick=cloudLoad;
   $('btnHistLimpar').onclick=()=>{if(confirm('Limpar histórico?')){localStorage.setItem(HIST,'[]');renderHist()}};
   $('btnExportBackup2').onclick=backup;if($('btnImportBackup2'))$('btnImportBackup2').onclick=()=>$('backupFile')?.click();$('btnReset2').onclick=reset;if($('btnExportCSV'))$('btnExportCSV').onclick=exportCSV;
