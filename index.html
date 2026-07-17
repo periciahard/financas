@@ -18,9 +18,9 @@
 <meta name="twitter:title" content="Finanças Família">
 <meta name="twitter:description" content="Organização financeira familiar">
 <meta name="twitter:image" content="https://periciahard.github.io/financas/icons/social-preview.png?v=1">
-<link rel="manifest" href="manifest.webmanifest?v=33.3.13">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=2">
-<link rel="apple-touch-icon" href="icons/icon-192.png?v=2">
+<link rel="manifest" href="manifest.webmanifest?v=33.3.15">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=3">
+<link rel="apple-touch-icon" href="icons/icon-192.png?v=3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Finanças Família">
@@ -1584,9 +1584,9 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
   #dashboard #kpis,.executiveKpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
   #dashboard #kpis .kpiExecutive{min-height:66px!important;padding:8px!important;gap:6px!important;overflow:hidden!important}
   #dashboard #kpis .kpiIconExec{width:27px!important;height:27px!important;font-size:14px!important;flex:0 0 auto!important}
-  #dashboard #kpis .kpiText{min-width:0!important;padding:0!important;overflow:hidden!important}
-  #dashboard #kpis .label{font-size:8px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  #dashboard #kpis .value{font-size:14px!important;white-space:nowrap!important;overflow:visible!important;margin-top:3px!important}
+  #dashboard #kpis .kpiText{min-width:0!important;width:100%!important;padding:0 2px!important;overflow:visible!important}
+  #dashboard #kpis .label{display:block!important;max-width:100%!important;padding-left:2px!important;font-size:8px!important;letter-spacing:.045em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #dashboard #kpis .value{display:block!important;max-width:100%!important;padding-left:2px!important;font-size:13px!important;letter-spacing:-.04em!important;white-space:nowrap!important;overflow:visible!important;margin-top:3px!important}
   #dashboard #kpis .kpiGo{display:none!important}
   #dashboard .sectionTitle{margin-top:11px!important}#dashboard .sectionTitle>h3{font-size:16px!important}
   .budgetAvailableList,.dashboardCategoryList{grid-template-columns:1fr!important;padding:2px 7px!important}
@@ -1756,14 +1756,14 @@ button:hover,.linkBtn:hover{transform:translateY(-1px);filter:brightness(1.05)}
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js?v=33.3.13"></script>
-<script src="financeiro-data.js?v=33.3.13"></script>
-<script src="app.js?v=33.3.13"></script>
+<script src="supabase-config.js?v=33.3.15"></script>
+<script src="financeiro-data.js?v=33.3.15"></script>
+<script src="app.js?v=33.3.15"></script>
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
     try{
-      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.13',{updateViaCache:'none'});
+      const reg=await navigator.serviceWorker.register('./sw.js?v=33.3.15',{updateViaCache:'none'});
       await reg.update();
       let refreshed=false;
       navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!refreshed){refreshed=true;location.reload()}});

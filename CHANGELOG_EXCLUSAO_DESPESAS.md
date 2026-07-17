@@ -161,3 +161,14 @@ Nas despesas fixas e variáveis, a exclusão remove o item e seus valores de tod
 - Categorias criadas ficam disponíveis nos formulários, compras de cartão e alterações de categoria, além de serem sincronizadas com os demais dados.
 - Incluído o campo “Receitas extras” nas receitas mensais.
 - Receitas extras passam a compor o total de receitas, o saldo e todas as projeções e relatórios.
+
+## Confirmações e indicadores móveis
+
+- Confirmação de sincronização reduzida para “Salvo” e “Atualizado”.
+- Atualização pela nuvem passa a executar diretamente pelo botão correspondente.
+- Ajustado o espaço interno dos indicadores do Dashboard no celular para preservar títulos e valores completos.
+
+## Ícone do aplicativo
+
+- Criado ícone financeiro com carteira e símbolo “R$” para o atalho salvo na tela inicial do celular.
+- Atualizadas as referências do manifesto, favicon e ícone do iPhone para evitar o reaproveitamento do ícone antigo.

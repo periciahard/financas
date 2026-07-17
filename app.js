@@ -38,7 +38,7 @@ const FATURA_NUBANK_FELIPE_AGOSTO_2026=[
   {id:'oboticario-2',data:'2026-06-26',empresa:'Hna*Oboticario',valor:30.78,atual:2,total:10,categoria:'Compras'}
 ];
 const TABS=[['dashboard','Dashboard','📊'],['fixas','Despesas fixas','🏠'],['variaveis','Despesas variáveis','🛒'],['cartoes','Cartões','💳'],['orcamentos','Relatórios','📈'],['historico','Exportar / Backup','☁️']];
-const APP_VERSION='V33.3.13';
+const APP_VERSION='V33.3.15';
 const STORE='financasFamiliaV33_2_2InterfaceCompacta';
 const HIST='financasFamiliaHistoricoV33_2_2InterfaceCompacta';
 let state=null;
@@ -353,7 +353,7 @@ async function cloudSave(){
     if(error)throw error;
     setLastSync(savedAt);
     addHist('Sincronização em nuvem','Backup criptografado enviado ao Supabase');
-    alert('Dados criptografados e salvos no Supabase.');
+    alert('Salvo.');
     renderCloudStatus();
   }catch(e){alert('Falha ao salvar na nuvem: '+(e.message||e));}
 }
@@ -370,12 +370,11 @@ async function cloudLoad(){
     try{inner=data.enc?await decryptFromCloud(data,key):data;}
     catch(e){throw new Error('Não foi possível decodificar os dados. Confira se o código familiar está correto.');}
     if(!inner||!inner.state)throw new Error('Nenhum backup encontrado para este código.');
-    if(!confirm('Substituir os dados locais pelos dados salvos no Supabase?'))return;
     state=normalize(inner.state);syncCustomCategories();save();
     if(Array.isArray(inner.history))localStorage.setItem(HIST,JSON.stringify(inner.history.slice(0,500)));
     setLastSync(data.savedAt||new Date().toISOString());
     addHist('Sincronização em nuvem','Backup restaurado e decodificado do Supabase');
-    alert('Dados restaurados do Supabase.');
+    alert('Atualizado.');
     render();
   }catch(e){alert('Falha ao carregar da nuvem: '+(e.message||e));}
 }
